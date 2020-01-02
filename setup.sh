@@ -21,15 +21,16 @@ then
 cat > frpc.ini <<EOF
 [common]
 server_port = 7000
-server_addr = SERVER_ADDR
+server_addr = $2
 
 [ssh]
 type = tcp
 local_ip = 127.0.0.1
 local_port = 22
-remote_port = REMOTE_PORT
+remote_port = $3
 EOF
 cmd="${PWD}/frpc -c ${PWD}/frpc.ini \&"
+./frpc -c ./frpc.ini &
 fi
 
 if [ "$1" = 'server' ];
@@ -39,7 +40,7 @@ cat > frps.ini <<EOF
 bind_port = 7000
 EOF
 cmd="${PWD}/frps -c ${PWD}/frps.ini \&"
-# ./frps -c ./frps.ini
+./frps -c ./frps.ini &
 fi
 sudo sed -i "s#exit 0\$#${cmd} \nexit 0#" /etc/rc.local
 echo 'auto-run on boot!'
